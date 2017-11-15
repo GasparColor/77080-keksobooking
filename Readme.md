@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Александр Карташов](https://up.htmlacademy.ru/javascript/11/user/77080).
-* Наставник: `Неизвестно`.
+* Наставник: [Руфат Хасларов](hhttps://htmlacademy.ru/profile/id372587).
 
 ---
 
