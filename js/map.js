@@ -63,8 +63,8 @@ var createSimilarOffer = function () {
         photos: []
       },
     };
-    return similarOffers[i];
   }
+  return similarOffers[i];
 };
 
 createSimilarOffer();
