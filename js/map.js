@@ -68,3 +68,62 @@ var createSimilarOffer = function () {
 };
 
 createSimilarOffer();
+
+
+// Создаем метку на карте
+var renderCardPin = function () {
+  var mapCardTemplate = document.querySelector('template').content.querySelector('button.map__pin');
+  for (var i = 0; i < 8; i++) {
+    var offersButton = mapCardTemplate.cloneNode(true);
+    offersButton.style.left = locationX;
+    offersButton.style.top = locationY;
+    // var cardButtonAvatar = offersButton.querySelectorAll('img');
+    // cardButtonAvatar[0].src = offer.author.avatar;
+  }
+  return offersButton;
+};
+renderCardPin();
+
+var buttonElements = document.querySelector('.map__pins');
+
+// Вставляем метки в разметку
+var fragmentBtn = document.createDocumentFragment();
+for (var i = 0; i < similarOffers.length; i++) {
+  fragmentBtn.appendChild(renderCardPin(similarOffers[i]));
+}
+
+buttonElements.appendChild(fragmentBtn);
+
+// Создаем карточку с похожим предложением
+var renderMapCard = function (offer) {
+  var mapCardTemplate = document.querySelector('template').content.querySelector('article.map__card');
+  for (i = 0; i < 8; i++) {
+    var mapCardElement = mapCardTemplate.cloneNode(true);
+    var mapCardTitle = mapCardElement.querySelectorAll('h3');
+    mapCardTitle[0].textContent = offer.offers.title;
+    mapCardElement.querySelectorAll('small').textContent = offer.offers.address;
+    var mapCardPrice = mapCardElement.querySelectorAll('.popup__price');
+    mapCardPrice[0].innerHTML = offer.offers.price + ' &#x20bd;/ночь';
+    // В блок h4 выведите тип жилья offer.type: Квартира для flat, Бунгало для bungalo, Дом для house
+    var textBlock = mapCardElement.querySelectorAll('p');
+    textBlock[2].textContent = offer.offers.rooms + ' комнаты для ' + offer.offers.guests + ' гостей';
+    textBlock[3].textContent = 'Заезд после ' + offer.offers.checkin + ', выезд до ' + offer.offers.checkout;
+    // В список .popup__features выведите все доступные удобства в квартире из массива {{offer.features}} пустыми элементами списка (<li>) с классом feature feature--{{название удобства}}
+    textBlock[4].textContent = offer.offers.description;
+    var imgBlock = mapCardElement.querySelectorAll('img.popup__avatar');
+    imgBlock[0].src = offer.author.avatar;
+  }
+  return mapCardElement;
+};
+
+var similarOfferElement = document.querySelector('.map');
+
+// Вставляем карточку похожих объявлений в разметку
+var fragment = document.createDocumentFragment();
+for (i = 0; i < similarOffers.length; i++) {
+  fragment.appendChild(renderMapCard(similarOffers[i]));
+}
+
+similarOfferElement.appendChild(fragment);
+
+
