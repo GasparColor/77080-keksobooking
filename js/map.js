@@ -4,7 +4,7 @@
 var mapCard = document.querySelector('.map');
 mapCard.classList.remove('map--faded');
 
-var title = [
+var TITLE = [
   'Большая уютная квартира',
   'Маленькая неуютная квартира',
   'Огромный прекрасный дворец',
@@ -37,6 +37,10 @@ var getRandomNumber = function (min, max) {
 var locationX = getRandomNumber(300, 900);
 var locationY = getRandomNumber(100, 500);
 
+// Создаем массив случайных данных
+// var getRandomArray = function () {
+//
+// }
 
 // Создаем похожее предложение
 var createSimilarOffer = function () {
@@ -50,7 +54,7 @@ var createSimilarOffer = function () {
         y: locationY
       },
       offers: {
-        title: getRandomItem(title),
+        title: getRandomItem(TITLE),
         address: locationX + ',' + locationY,
         price: getRandomNumber(1000, 100000),
         type: getRandomItem(typeOffers),
@@ -104,7 +108,14 @@ var renderMapCard = function (offer) {
     mapCardElement.querySelectorAll('small').textContent = offer.offers.address;
     var mapCardPrice = mapCardElement.querySelectorAll('.popup__price');
     mapCardPrice[0].innerHTML = offer.offers.price + ' &#x20bd;/ночь';
-    // В блок h4 выведите тип жилья offer.type: Квартира для flat, Бунгало для bungalo, Дом для house
+    var mapCardType = mapCardElement.querySelectorAll('h4');
+    if (offer.offers.type === 'house') {
+      mapCardType[0].textContent = 'Дом';
+    } else if (offer.offers.type === 'bungalo') {
+      mapCardType[0].textContent = 'Бунгало';
+    } else if (offer.offers.type === 'flat') {
+      mapCardType[0].textcontent = 'Квартира';
+    }
     var textBlock = mapCardElement.querySelectorAll('p');
     textBlock[2].textContent = offer.offers.rooms + ' комнаты для ' + offer.offers.guests + ' гостей';
     textBlock[3].textContent = 'Заезд после ' + offer.offers.checkin + ', выезд до ' + offer.offers.checkout;
