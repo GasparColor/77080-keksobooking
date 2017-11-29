@@ -1,26 +1,6 @@
 'use strict';
 
-// Найти элемент с классом .map и среди классов этого элемента убрать класс  .remove
-var mapCard = document.querySelector('.map');
-mapCard.classList.remove('map--faded');
-
-var TITLE = [
-  'Большая уютная квартира',
-  'Маленькая неуютная квартира',
-  'Огромный прекрасный дворец',
-  'Маленький ужасный дворец',
-  'Красивый гостевой домик',
-  'Некрасивый негостеприимный домик',
-  'Уютное бунгало далеко от моря',
-  'Неуютное бунгало по колено в воде'
-];
-
-var features = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-var typeOffers = ['flat', 'house', 'bungalo'];
-var checkinOrCheckout = ['12:00', '13:00', '14:00'];
-var similarOffers = [];
-
-// Получить случайный элемент из массива
+// Получает случайный элемент из массива
 var getRandomItem = function (arr) {
   var randomIndex = Math.floor(Math.random() * arr.length);
   return arr[randomIndex];
@@ -33,108 +13,132 @@ var getRandomNumber = function (min, max) {
   return rand;
 };
 
-// Вычисляем координаты точек X,Y
-var locationX = getRandomNumber(300, 900);
-var locationY = getRandomNumber(100, 500);
+// В блоке `selectedBlock` удалить класс `selectedClass`
+var removeClass = function (selectedBlock, selectedClass) {
+  var modifedElement = document.querySelector(selectedBlock);
+  modifedElement.classList.remove(selectedClass);
+};
 
-// Создаем массив случайных данных
+// TODO Создаем массив случайных данных
 // var getRandomArray = function () {
 //
 // }
 
 // Создаем похожее предложение
 var createSimilarOffer = function () {
-  for (var i = 0; i < 8; i++) {
-    similarOffers[i] = {
+  var quantity = 8;
+  var TITLE = [
+    'Большая уютная квартира',
+    'Маленькая неуютная квартира',
+    'Огромный прекрасный дворец',
+    'Маленький ужасный дворец',
+    'Красивый гостевой домик',
+    'Некрасивый негостеприимный домик',
+    'Уютное бунгало далеко от моря',
+    'Неуютное бунгало по колено в воде'
+  ];
+  var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+  var TYPE_OFFERS = ['flat', 'house', 'bungalo'];
+  var CHECK_IN_OR_CHECK_OUT = ['12:00', '13:00', '14:00'];
+  var SIMILAR_OFFERS = [];
+  var LOCATION_X = getRandomNumber(300, 900);
+  var LOCATION_Y = getRandomNumber(100, 500);
+  for (var i = 0; i < quantity; i++) {
+    SIMILAR_OFFERS[i] = {
       author: {
         avatar: 'img/avatars/user0' + getRandomNumber(1, 8) + '.png'
       },
       location: {
-        x: locationX,
-        y: locationY
+        x: LOCATION_X,
+        y: LOCATION_Y
       },
       offers: {
         title: getRandomItem(TITLE),
-        address: locationX + ',' + locationY,
+        address: LOCATION_X + ',' + LOCATION_Y,
         price: getRandomNumber(1000, 100000),
-        type: getRandomItem(typeOffers),
+        type: getRandomItem(TYPE_OFFERS),
         rooms: getRandomNumber(1, 5),
         guests: getRandomNumber(1, 5),
-        checkin: getRandomItem(checkinOrCheckout),
-        checkout: getRandomItem(checkinOrCheckout),
-        features: getRandomItem(features),
+        checkin: getRandomItem(CHECK_IN_OR_CHECK_OUT),
+        checkout: getRandomItem(CHECK_IN_OR_CHECK_OUT),
+        features: getRandomItem(FEATURES),
         description: '',
         photos: []
       },
     };
   }
-  return similarOffers[i];
+  return SIMILAR_OFFERS[i];
 };
 
 createSimilarOffer();
 
+// В блоке .map удаляем класс map--faded
+removeClass('.map', 'map--faded');
 
-// Создаем метку на карте
-var renderCardPin = function () {
-  var mapCardTemplate = document.querySelector('template').content.querySelector('button.map__pin');
-  for (var i = 0; i < 8; i++) {
-    var offersButton = mapCardTemplate.cloneNode(true);
-    offersButton.style.left = locationX;
-    offersButton.style.top = locationY;
-    // var cardButtonAvatar = offersButton.querySelectorAll('img');
-    // cardButtonAvatar[0].src = offer.author.avatar;
+// TODO Создаем метку на карте
+// var renderCardPin = function (SIMILAR_OFFERS) {
+//   var mapCardTemplate = document.querySelector('template').content.querySelector('button.map__pin');
+//   for (var i = 0; i < 8; i++) {
+//     var offersButton = mapCardTemplate.cloneNode(true);
+//     offersButton.style.left = locationX;
+//     offersButton.style.top = locationY;
+// offersButton.querySelector('img').src = similarOffers.author.avatar;
+// var cardButtonAvatar = offersButton.querySelectorAll('img');
+// cardButtonAvatar[0].src = offer.author.avatar;
+//   }
+//   return offersButton;
+// };
+// renderCardPin();
+
+// var buttonElements = document.querySelector('.map__pins');
+
+// TODO Вставляем метки в разметку
+// var fragmentBtn = document.createDocumentFragment();
+// for (var i = 0; i < SIMILAR_OFFERS.length; i++) {
+//   fragmentBtn.appendChild(renderCardPin(SIMILAR_OFFERS[i]));
+// }
+//
+// buttonElements.appendChild(fragmentBtn);
+
+// Переводы для типов жилья
+var offersTypeTranslations = function (type) {
+  if (type === 'house') {
+    return 'Дом';
+  } else if (type === 'bungalo') {
+    return 'Бунгало';
+  } else {
+    return 'Квартира';
   }
-  return offersButton;
 };
-renderCardPin();
-
-var buttonElements = document.querySelector('.map__pins');
-
-// Вставляем метки в разметку
-var fragmentBtn = document.createDocumentFragment();
-for (var i = 0; i < similarOffers.length; i++) {
-  fragmentBtn.appendChild(renderCardPin(similarOffers[i]));
-}
-
-buttonElements.appendChild(fragmentBtn);
 
 // Создаем карточку с похожим предложением
 var renderMapCard = function (offer) {
   var mapCardTemplate = document.querySelector('template').content.querySelector('article.map__card');
-  for (i = 0; i < 8; i++) {
-    var mapCardElement = mapCardTemplate.cloneNode(true);
-    var mapCardTitle = mapCardElement.querySelectorAll('h3');
-    mapCardTitle[0].textContent = offer.offers.title;
-    mapCardElement.querySelectorAll('small').textContent = offer.offers.address;
-    var mapCardPrice = mapCardElement.querySelectorAll('.popup__price');
-    mapCardPrice[0].innerHTML = offer.offers.price + ' &#x20bd;/ночь';
-    var mapCardType = mapCardElement.querySelectorAll('h4');
-    if (offer.offers.type === 'house') {
-      mapCardType[0].textContent = 'Дом';
-    } else if (offer.offers.type === 'bungalo') {
-      mapCardType[0].textContent = 'Бунгало';
-    } else if (offer.offers.type === 'flat') {
-      mapCardType[0].textcontent = 'Квартира';
-    }
-    var textBlock = mapCardElement.querySelectorAll('p');
-    textBlock[2].textContent = offer.offers.rooms + ' комнаты для ' + offer.offers.guests + ' гостей';
-    textBlock[3].textContent = 'Заезд после ' + offer.offers.checkin + ', выезд до ' + offer.offers.checkout;
-    // В список .popup__features выведите все доступные удобства в квартире из массива {{offer.features}} пустыми элементами списка (<li>) с классом feature feature--{{название удобства}}
-    textBlock[4].textContent = offer.offers.description;
-    var imgBlock = mapCardElement.querySelectorAll('img.popup__avatar');
-    imgBlock[0].src = offer.author.avatar;
-  }
+  var mapCardElement = mapCardTemplate.cloneNode(true);
+  // типы жилья
+  mapCardElement.querySelector('h4').textContent = offersTypeTranslations(offer.offers.type);
+  // заголовок
+  mapCardElement.querySelector('h3').textContent = offer.offers.title;
+  // адресс
+  mapCardElement.querySelector('small').textContent = offer.offers.address;
+  // цена
+  mapCardElement.querySelector('.popup__price').innerHTML = offer.offers.price + ' &#x20bd;/ночь';
+  // количество комнат и гостей
+  mapCardElement.querySelector('h4 + p').textContent = offer.offers.rooms + ' комнаты для ' + offer.offers.guests + ' гостей';
+  // время заезда и выезда
+  mapCardElement.querySelector('h4 + p + p').textContent = 'Заезд после ' + offer.offers.checkin + ', выезд до ' + offer.offers.checkout;
+  // TODO В список .popup__features выведите все доступные удобства в квартире из массива {{offer.features}} пустыми элементами списка (<li>) с классом feature feature--{{название удобства}}
+  // описание предложения
+  mapCardElement.querySelector('ul + p').textContent = offer.offers.description;
+  mapCardElement.querySelector('img.popup__avatar').src = offer.author.avatar;
   return mapCardElement;
 };
 
-var similarOfferElement = document.querySelector('.map');
 
 // Вставляем карточку похожих объявлений в разметку
+var similarOfferElement = document.querySelector('.map');
 var fragment = document.createDocumentFragment();
-for (i = 0; i < similarOffers.length; i++) {
-  fragment.appendChild(renderMapCard(similarOffers[i]));
+for (var i = 0; i < SIMILAR_OFFERS.length; i++) {
+  fragment.appendChild(renderMapCard(SIMILAR_OFFERS[i]));
 }
-
 similarOfferElement.appendChild(fragment);
-
-
