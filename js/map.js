@@ -20,10 +20,17 @@ var removeClass = function (selectedBlock, selectedClass) {
 };
 
 // TODO Создаем массив случайных данных
-// var getRandomArray = function () {
-//
-// }
+var getFeatures = function (basicfeatures, count) {
+  var uniquefeatures = [];
+  var templateArrow = basicfeatures.slice(); // копия исходного массива
+  for (var i = 0; i < count; i++) {
+    var index = Math.floor(Math.random() * templateArrow.length);
+    uniquefeatures.push(templateArrow.splice(index, 1)[0]);
+  }
+  return uniquefeatures;
+};
 
+var SIMILAR_OFFERS = [];
 // Создаем похожее предложение
 var createSimilarOffer = function () {
   var quantity = 8;
@@ -40,7 +47,7 @@ var createSimilarOffer = function () {
   var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
   var TYPE_OFFERS = ['flat', 'house', 'bungalo'];
   var CHECK_IN_OR_CHECK_OUT = ['12:00', '13:00', '14:00'];
-  var SIMILAR_OFFERS = [];
+
   var LOCATION_X = getRandomNumber(300, 900);
   var LOCATION_Y = getRandomNumber(100, 500);
   for (var i = 0; i < quantity; i++) {
@@ -61,7 +68,7 @@ var createSimilarOffer = function () {
         guests: getRandomNumber(1, 5),
         checkin: getRandomItem(CHECK_IN_OR_CHECK_OUT),
         checkout: getRandomItem(CHECK_IN_OR_CHECK_OUT),
-        features: getRandomItem(FEATURES),
+        features: getFeatures(FEATURES, getRandomNumber(0, FEATURES.length)),
         description: '',
         photos: []
       },
@@ -90,15 +97,24 @@ removeClass('.map', 'map--faded');
 // };
 // renderCardPin();
 
-// var buttonElements = document.querySelector('.map__pins');
 
 // TODO Вставляем метки в разметку
+// var buttonElements = document.querySelector('.map__pins');
 // var fragmentBtn = document.createDocumentFragment();
 // for (var i = 0; i < SIMILAR_OFFERS.length; i++) {
 //   fragmentBtn.appendChild(renderCardPin(SIMILAR_OFFERS[i]));
 // }
 //
 // buttonElements.appendChild(fragmentBtn);
+
+// генерируем уникальный список удобств
+var generateFeaturesList = function (featuresArray) {
+  var featuresList = '';
+  for (var i = 0; i < featuresArray.length; i++) {
+    featuresList = '<li class="feature feature--' + featuresArray[i] + '"></li>' + featuresList;
+  }
+  return featuresList;
+};
 
 // Переводы для типов жилья
 var offersTypeTranslations = function (type) {
@@ -127,9 +143,11 @@ var renderMapCard = function (offer) {
   mapCardElement.querySelector('h4 + p').textContent = offer.offers.rooms + ' комнаты для ' + offer.offers.guests + ' гостей';
   // время заезда и выезда
   mapCardElement.querySelector('h4 + p + p').textContent = 'Заезд после ' + offer.offers.checkin + ', выезд до ' + offer.offers.checkout;
-  // TODO В список .popup__features выведите все доступные удобства в квартире из массива {{offer.features}} пустыми элементами списка (<li>) с классом feature feature--{{название удобства}}
-  // описание предложения
+  // список
+  mapCardElement.querySelector('.popup__features').innerHTML = generateFeaturesList(offer.offers.features);
+  // доп.информация
   mapCardElement.querySelector('ul + p').textContent = offer.offers.description;
+  // аватарка
   mapCardElement.querySelector('img.popup__avatar').src = offer.author.avatar;
   return mapCardElement;
 };
