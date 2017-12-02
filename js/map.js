@@ -1,5 +1,20 @@
 'use strict';
 
+var TITLES = [
+  'Большая уютная квартира',
+  'Маленькая неуютная квартира',
+  'Огромный прекрасный дворец',
+  'Маленький ужасный дворец',
+  'Красивый гостевой домик',
+  'Некрасивый негостеприимный домик',
+  'Уютное бунгало далеко от моря',
+  'Неуютное бунгало по колено в воде'
+];
+var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+var TYPE_OFFERS = ['flat', 'house', 'bungalo'];
+var CHECK_IN = ['12:00', '13:00', '14:00'];
+var CHECK_OUT = ['12:00', '13:00', '14:00'];
+
 // Получает случайный элемент из массива
 var getRandomItem = function (arr) {
   var randomItem = Math.floor(Math.random() * arr.length);
@@ -12,6 +27,8 @@ var getRandomNumber = function (min, max) {
   rand = Math.floor(rand);
   return rand;
 };
+var LOCATION_X = getRandomNumber(300, 900);
+var LOCATION_Y = getRandomNumber(100, 500);
 
 // В блоке `selectedBlock` удалить класс `selectedClass`
 var removeClass = function (selectedBlock, selectedClass) {
@@ -33,26 +50,9 @@ var getFeatures = function (basicfeatures, count) {
 };
 
 
-
 // Создаем похожее предложение
 var similarOffer = function (num) {
-  var TITLES = [
-    'Большая уютная квартира',
-    'Маленькая неуютная квартира',
-    'Огромный прекрасный дворец',
-    'Маленький ужасный дворец',
-    'Красивый гостевой домик',
-    'Некрасивый негостеприимный домик',
-    'Уютное бунгало далеко от моря',
-    'Неуютное бунгало по колено в воде'
-  ];
-  var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-  var TYPE_OFFERS = ['flat', 'house', 'bungalo'];
-  var CHECK_IN = ['12:00', '13:00', '14:00'];
-  var CHECK_OUT = ['12:00', '13:00', '14:00'];
   var offer = [];
-  var LOCATION_X = getRandomNumber(300, 900);
-  var LOCATION_Y = getRandomNumber(100, 500);
   for (var i = 0; i < num; i++) {
     offer[i] = {
       author: {
@@ -83,26 +83,29 @@ var similarOffer = function (num) {
 var createOffers = similarOffer(8);
 
 
-// генерируем одну метку на карте
-var generatePin = function (ad) {
-  var imgHeight = 44;
-  var sharpEdge = 18;
-  var template = document.querySelector('template');
-  var pinTemplate = template.content.querySelector('.map__pin');
-  var newPin = pinTemplate.cloneNode(true);
-  newPin.setAttribute('style', 'left:' + (ad.location.x) + 'px; top:' + (ad.location.y + imgHeight / 2 + sharpEdge) + 'px');
-  newPin.children[0].setAttribute('src', ad.author.avatar);
-  return newPin;
-};
+// // генерируем одну метку на карте
+// var generatePin = function (ad) {
+//   var imgHeight = 44;
+//   var sharpEdge = 18;
+//   var template = document.querySelector('template');
+//   var pinTemplate = template.content.querySelector('.map__pin');
+//   var newPin = pinTemplate.cloneNode(true);
+//   newPin.setAttribute('style', 'left:' + (ad.location.x) + 'px; top:' + (ad.location.y + imgHeight / 2 + sharpEdge) + 'px');
+//   newPin.children[0].setAttribute('src', ad.author.avatar);
+//   return newPin;
+// };
+//
+// var makePin = generatePin();
+//
+//
+// // показываем сгенерированные DOM-элементы (метки на карте)
+//
+//   var fragment = document.createDocumentFragment();
+//   for (var i = 0; i < makePin.length; i++) {
+//     fragment.appendChild(generatePin(makePin[i]));
+//   }
+//   document.querySelector('.map__pins').appendChild(fragment);
 
-// показываем сгенерированные DOM-элементы (метки на карте)
-var depictPins = function (adsArray) {
-  var fragment = document.createDocumentFragment();
-  for (var i = 0; i < adsArray.length; i++) {
-    fragment.appendChild(generatePin(adsArray[i]));
-  }
-  document.querySelector('.map__pins').appendChild(fragment);
-};
 // генерируем уникальный список удобств
 var generateFeaturesList = function (featuresArray) {
   var featuresList = '';
