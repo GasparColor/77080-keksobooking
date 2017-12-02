@@ -20,9 +20,14 @@ var APARTMENTS_TRANSLATES = {
 var CHECK_IN = ['12:00', '13:00', '14:00'];
 var CHECK_OUT = ['12:00', '13:00', '14:00'];
 
+
+var fragment = document.createDocumentFragment();
 var cardTemplate = document.querySelector('template').content.querySelector('article.map__card');
 var cardElement = cardTemplate.cloneNode(true);
 var similarOfferElement = document.querySelector('.map');
+var renderPinsTo = document.querySelector('.map__pins');
+
+
 // Получает случайный элемент из массива
 var getRandomItem = function (arr) {
   var randomItem = Math.floor(Math.random() * arr.length);
@@ -42,15 +47,12 @@ var getAvatar = function (number) {
   return 'img/avatars/user' + generatedNumber + '.png';
 };
 
-
 // В блоке `selectedBlock` удалить класс `selectedClass`
 var removeClass = function (selectedBlock, selectedClass) {
   var modifedElement = document.querySelector(selectedBlock);
   modifedElement.classList.remove(selectedClass);
 };
 
-// В блоке `map` удаляем класс `map--faded`
-removeClass('.map', 'map--faded');
 
 var getFeatures = function (basicfeatures, count) {
   var uniquefeatures = [];
@@ -67,19 +69,19 @@ var getFeatures = function (basicfeatures, count) {
 var createSimilarOffers = function (num) {
   var offer = [];
   for (var i = 0; i < num; i++) {
-    var LOCATION_X = getRandomNumber(300, 900);
-    var LOCATION_Y = getRandomNumber(100, 500);
+    var locationX = getRandomNumber(300, 900);
+    var locationY = getRandomNumber(100, 500);
     offer[i] = {
       author: {
         avatar: getAvatar(i + 1)
       },
       location: {
-        x: LOCATION_X,
-        y: LOCATION_Y
+        x: locationX,
+        y: locationY
       },
       offer: {
         title: getRandomItem(TITLES),
-        address: LOCATION_X + ',' + LOCATION_Y,
+        address: locationX + ',' + locationY,
         price: getRandomNumber(1000, 100000),
         type: getRandomItem(TYPE_APARTMENTS),
         rooms: getRandomNumber(1, 5),
@@ -97,6 +99,7 @@ var createSimilarOffers = function (num) {
 
 var offersList = createSimilarOffers(8);
 
+
 // создаем метку
 var generatePin = function (ad) {
   var imgHeight = 44;
@@ -109,25 +112,22 @@ var generatePin = function (ad) {
   return newPin;
 };
 
-var fragment = document.createDocumentFragment();
-
 // показываем сгенерированные DOM-элементы (метки на карте)
 var depictPins = function (offersList) {
-
   for (var i = 0; i < offersList.length; i++) {
     fragment.appendChild(generatePin(offersList[i]));
   }
-  document.querySelector('.map__pins').appendChild(fragment);
+  renderPinsTo.appendChild(fragment);
 };
 
-function removeUnnessaryFeatureElements(offer, cardElement) {
+
+var removeUnnessaryFeatureElements = function (offer, cardElement) {
   for (var i = 0; i < FEATURES.length; i++) {
     if (offer.features.indexOf(FEATURES[i]) < 0) {
       cardElement.querySelector('.feature--' + FEATURES[i]).remove();
     }
   }
 }
-
 
 // Создаем карточку с похожим предложением
 var renderCard = function (card) {
@@ -153,6 +153,9 @@ var renderCard = function (card) {
   similarOfferElement.appendChild(cardElement);
 };
 
-// Вставляем карточку похожих объявлений в разметку
 depictPins(offersList);
+// В блоке `map` удаляем класс `map--faded`
+removeClass('.map', 'map--faded');
+
+// Вставляем карточку похожих объявлений в разметку
 fragment.appendChild(renderCard(offersList[0]));
