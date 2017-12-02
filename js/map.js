@@ -20,6 +20,9 @@ var APARTMENTS_TRANSLATES = {
 var CHECK_IN = ['12:00', '13:00', '14:00'];
 var CHECK_OUT = ['12:00', '13:00', '14:00'];
 
+var cardTemplate = document.querySelector('template').content.querySelector('article.map__card');
+var cardElement = cardTemplate.cloneNode(true);
+var similarOfferElement = document.querySelector('.map');
 // Получает случайный элемент из массива
 var getRandomItem = function (arr) {
   var randomItem = Math.floor(Math.random() * arr.length);
@@ -32,8 +35,13 @@ var getRandomNumber = function (min, max) {
   rand = Math.floor(rand);
   return rand;
 };
-var LOCATION_X = getRandomNumber(300, 900);
-var LOCATION_Y = getRandomNumber(100, 500);
+
+// Ссылка на аватарку
+var getAvatar = function (number) {
+  var generatedNumber = '0' + number.toString();
+  return 'img/avatars/user' + generatedNumber + '.png';
+};
+
 
 // В блоке `selectedBlock` удалить класс `selectedClass`
 var removeClass = function (selectedBlock, selectedClass) {
@@ -59,9 +67,11 @@ var getFeatures = function (basicfeatures, count) {
 var createSimilarOffers = function (num) {
   var offer = [];
   for (var i = 0; i < num; i++) {
+    var LOCATION_X = getRandomNumber(300, 900);
+    var LOCATION_Y = getRandomNumber(100, 500);
     offer[i] = {
       author: {
-        avatar: 'img/avatars/user0' + getRandomNumber(1, 8) + '.png'
+        avatar: getAvatar(i + 1)
       },
       location: {
         x: LOCATION_X,
@@ -87,6 +97,7 @@ var createSimilarOffers = function (num) {
 
 var offersList = createSimilarOffers(8);
 
+// создаем метку
 var generatePin = function (ad) {
   var imgHeight = 44;
   var sharpEdge = 18;
@@ -99,6 +110,7 @@ var generatePin = function (ad) {
 };
 
 var fragment = document.createDocumentFragment();
+
 // показываем сгенерированные DOM-элементы (метки на карте)
 var depictPins = function (offersList) {
 
@@ -134,19 +146,13 @@ var renderCard = function (card) {
   cardElement.querySelector('h4 + p + p').textContent = 'Заезд после ' + offer.checkin + ', выезд до ' + offer.checkout;
   // список
   removeUnnessaryFeatureElements(offer, cardElement);
-
   // доп.информация
   cardElement.querySelector('ul + p').textContent = offer.description;
   // аватарка
   cardElement.querySelector('img.popup__avatar').src = card.author.avatar;
   similarOfferElement.appendChild(cardElement);
-
 };
-
-var cardTemplate = document.querySelector('template').content.querySelector('article.map__card');
-var cardElement = cardTemplate.cloneNode(true);
-var similarOfferElement = document.querySelector('.map');
 
 // Вставляем карточку похожих объявлений в разметку
 depictPins(offersList);
-fragment.appendChild(renderCard(offersList[2]));
+fragment.appendChild(renderCard(offersList[0]));
