@@ -113,7 +113,7 @@ var generatePin = function (ad) {
 };
 
 // показываем сгенерированные DOM-элементы (метки на карте)
-var depictPins = function (offersList) {
+var depictPins = function () {
   for (var i = 0; i < offersList.length; i++) {
     fragment.appendChild(generatePin(offersList[i]));
   }
@@ -121,13 +121,13 @@ var depictPins = function (offersList) {
 };
 
 
-var removeUnnessaryFeatureElements = function (offer, cardElement) {
+var removeUnnessaryFeatureElements = function (offer) {
   for (var i = 0; i < FEATURES.length; i++) {
     if (offer.features.indexOf(FEATURES[i]) < 0) {
       cardElement.querySelector('.feature--' + FEATURES[i]).remove();
     }
   }
-}
+};
 
 // Создаем карточку с похожим предложением
 var renderCard = function (card) {
