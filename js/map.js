@@ -137,7 +137,7 @@ var renderCard = function (card) {
   // адрес
   cardElement.querySelector('small').textContent = offer.address;
   // цена
-  cardElement.querySelector('.popup__price').innerHTML = offer.price + ' &#x20bd;/ночь';
+  cardElement.querySelector('.popup__price').textContent = offer.price + ' \u20BD / ночь';
   // количество комнат и гостей
   cardElement.querySelector('h4 + p').textContent = offer.rooms + ' комнаты для ' + offer.guests + ' гостей';
   // время заезда и выезда
