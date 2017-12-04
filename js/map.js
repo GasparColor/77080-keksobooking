@@ -21,11 +21,10 @@ var CHECK_IN = ['12:00', '13:00', '14:00'];
 var CHECK_OUT = ['12:00', '13:00', '14:00'];
 
 
-var fragment = document.createDocumentFragment();
 var cardTemplate = document.querySelector('template').content.querySelector('article.map__card');
 var cardElement = cardTemplate.cloneNode(true);
 var similarOfferElement = document.querySelector('.map');
-var renderPinsTo = document.querySelector('.map__pins');
+var mapPinsElement = document.querySelector('.map__pins');
 
 
 // Получает случайный элемент из массива
@@ -97,8 +96,6 @@ var createSimilarOffers = function (num) {
   return offer;
 };
 
-var offersList = createSimilarOffers(8);
-
 
 // создаем метку
 var generatePin = function (ad) {
@@ -113,11 +110,12 @@ var generatePin = function (ad) {
 };
 
 // показываем сгенерированные DOM-элементы (метки на карте)
-var depictPins = function () {
-  for (var i = 0; i < offersList.length; i++) {
-    fragment.appendChild(generatePin(offersList[i]));
+var renderPinsTo = function (offer) {
+  var fragment = document.createDocumentFragment();
+  for (var i = 0; i < offer.length; i++) {
+    fragment.appendChild(generatePin(offer[i]));
   }
-  renderPinsTo.appendChild(fragment);
+  mapPinsElement.appendChild(fragment);
 };
 
 
@@ -153,9 +151,15 @@ var renderCard = function (card) {
   similarOfferElement.appendChild(cardElement);
 };
 
-depictPins(offersList);
 // В блоке `map` удаляем класс `map--faded`
 removeClass('.map', 'map--faded');
 
-// Вставляем карточку похожих объявлений в разметку
-fragment.appendChild(renderCard(offersList[0]));
+var showContent = function () {
+  var offersList = createSimilarOffers(8);
+  renderPinsTo(offersList);
+  renderCard(offersList[0]);
+};
+
+showContent();
+
+
