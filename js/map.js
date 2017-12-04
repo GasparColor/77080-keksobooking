@@ -110,12 +110,12 @@ var generatePin = function (ad) {
 };
 
 // показываем сгенерированные DOM-элементы (метки на карте)
-var renderPinsTo = function (offer) {
+var renderPinsTo = function (offer, element) {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < offer.length; i++) {
     fragment.appendChild(generatePin(offer[i]));
   }
-  mapPinsElement.appendChild(fragment);
+  element.appendChild(fragment);
 };
 
 
@@ -156,7 +156,7 @@ removeClass('.map', 'map--faded');
 
 var showContent = function () {
   var offersList = createSimilarOffers(8);
-  renderPinsTo(offersList);
+  renderPinsTo(offersList, mapPinsElement);
   renderCard(offersList[0]);
 };
 
