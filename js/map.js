@@ -168,7 +168,7 @@ for (var i = 0; i < fieldsetDisabled.length; i++) {
 }
 
 var mainPin = document.querySelector('.map__pin--main');
-var mapPin = document.querySelector('.map__pin');
+var mapPin = document.querySelectorAll('.map__pin');
 var mainForm = document.querySelector('form');
 var dropMainPin = function () {
   removeClass('.map', 'map--faded');
@@ -180,14 +180,21 @@ var dropMainPin = function () {
   removeClass('.notice__form', 'notice__form--disabled');
 }
 
-mapPin.addEventListener('click', function () {
-  if (event.target.className === 'map__pin') {
-    mapPin.classList.add('.map__pin--active');
+var openPopup = function (e) {
+  if(mapPin.classList.contains('map__pin')) {
+    alert(e);
   }
-  alert('keks')
-  // mapPin.classList.add('map__pin--active');
+}
 
-})
+// mapPin.addEventListener('click', function () {
+//   if (event.target.className === 'map__pin') {
+//     mapPin.classList.add('.map__pin--active');
+//   }
+//   alert('keks')
+//   // mapPin.classList.add('map__pin--active');
+//
+// })
+mapPin.addEventListener('click', openPopup);
 
 
 mainPin.addEventListener('mouseup', dropMainPin);
