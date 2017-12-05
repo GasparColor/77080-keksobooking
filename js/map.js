@@ -170,6 +170,15 @@ for (var i = 0; i < fieldsetDisabled.length; i++) {
 var mainPin = document.querySelector('.map__pin--main');
 var mapPin = document.querySelector('.map__pin');
 var mainForm = document.querySelector('form');
+var dropMainPin = function () {
+  removeClass('.map', 'map--faded');
+  showContent();
+  for (var i = 0; i < fieldsetDisabled.length; i++) {
+    fieldsetDisabled[i].removeAttribute('disabled');
+  }
+  mainForm.classList.remove('notice__form--disabled');
+  removeClass('.notice__form', 'notice__form--disabled');
+}
 
 mapPin.addEventListener('click', function () {
   if (event.target.className === 'map__pin') {
@@ -180,15 +189,8 @@ mapPin.addEventListener('click', function () {
 
 })
 
-mainPin.addEventListener('mouseup', function () {
-  removeClass('.map', 'map--faded');
-  showContent();
-  for (var i = 0; i < fieldsetDisabled.length; i++) {
-    fieldsetDisabled[i].removeAttribute('disabled');
-  }
-  mainForm.classList.remove('notice__form--disabled');
-  removeClass('.notice__form', 'notice__form--disabled');
-});
+
+mainPin.addEventListener('mouseup', dropMainPin);
 
 
 
