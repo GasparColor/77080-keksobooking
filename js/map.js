@@ -151,15 +151,47 @@ var renderCard = function (card) {
   similarOfferElement.appendChild(cardElement);
 };
 
-// В блоке `map` удаляем класс `map--faded`
-removeClass('.map', 'map--faded');
-
 var showContent = function () {
   var offersList = createSimilarOffers(8);
   renderPinsTo(offersList, mapPinsElement);
-  renderCard(offersList[0]);
+  // renderCard(offersList[0]);
 };
 
-showContent();
+// В блоке `map` удаляем класс `map--faded`
+// removeClass('.map', 'map--faded');
+//  MODULE4-TASK1
+
+// всем полям `fieldset` ставим атрибут `disabled`
+var fieldsetDisabled = document.querySelectorAll('fieldset');
+for (var i = 0; i < fieldsetDisabled.length; i++) {
+  fieldsetDisabled[i].setAttribute('disabled', 'disabled');
+}
+
+var mainPin = document.querySelector('.map__pin--main');
+var mapPin = document.querySelector('.map__pin');
+var mainForm = document.querySelector('form');
+
+mapPin.addEventListener('click', function () {
+  if (event.target.className === 'map__pin') {
+    mapPin.classList.add('.map__pin--active');
+  }
+  alert('keks')
+  // mapPin.classList.add('map__pin--active');
+
+})
+
+mainPin.addEventListener('mouseup', function () {
+  removeClass('.map', 'map--faded');
+  showContent();
+  for (var i = 0; i < fieldsetDisabled.length; i++) {
+    fieldsetDisabled[i].removeAttribute('disabled');
+  }
+  mainForm.classList.remove('notice__form--disabled');
+  removeClass('.notice__form', 'notice__form--disabled');
+});
+
+
+
+
 
 
