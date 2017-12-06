@@ -101,17 +101,22 @@ var createSimilarOffers = function (num) {
 
 
 // создаем метку
-var generatePin = function (ad) {
+var generatePin = function (ad, adId) {
   var imgHeight = 44;
   var sharpEdge = 18;
   var template = document.querySelector('template');
   var pinTemplate = template.content.querySelector('.map__pin');
   var newPin = pinTemplate.cloneNode(true);
+
+  newPin.dataset.id = adId;
   newPin.setAttribute('style', 'left:' + (ad.location.x) + 'px; top:' + (ad.location.y + imgHeight / 2 + sharpEdge) + 'px');
+
   newPin.children[0].setAttribute('src', ad.author.avatar);
+
   newPin.addEventListener('click', onPinClick);
   newPin.addEventListener('keydown', onPinKeydown);
   newPin.addEventListener('keydown', onEscKeydown);
+
   return newPin;
 };
 
@@ -119,18 +124,22 @@ var generatePin = function (ad) {
 var renderPinsTo = function (offer, element) {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < offer.length; i++) {
-    fragment.appendChild(generatePin(offer[i]));
+    fragment.appendChild(generatePin(offer[i], i));
   }
   element.appendChild(fragment);
 };
 
 
-var removeUnnessaryFeatureElements = function (offer) {
-  for (var i = 0; i < FEATURES.length; i++) {
-    if (offer.features.indexOf(FEATURES[i]) < 0) {
-      cardElement.querySelector('.feature--' + FEATURES[i]).remove();
+var removeUnnecessaryFeatureElements = function (offer) {
+  FEATURES.forEach(function (feature) {
+    // фичи, которых нет в оффере, удалять, если они уже есть в разметке
+    if (offer.features.indexOf(feature) === -1) {
+      var featureElement = cardElement.querySelector('.feature--' + feature);
+      if (featureElement) {
+        featureElement.remove();
+      }
     }
-  }
+  });
 };
 
 // Создаем карточку с похожим предложением
@@ -149,7 +158,7 @@ var renderCard = function (card) {
   // время заезда и выезда
   cardElement.querySelector('h4 + p + p').textContent = 'Заезд после ' + offer.checkin + ', выезд до ' + offer.checkout;
   // список
-  removeUnnessaryFeatureElements(offer, cardElement);
+  removeUnnecessaryFeatureElements(offer, cardElement);
   // доп.информация
   cardElement.querySelector('ul + p').textContent = offer.description;
   // аватарка
@@ -163,9 +172,9 @@ var offersList = createSimilarOffers(8);
 //  MODULE4-TASK1
 
 // всем полям `fieldset` ставим атрибут `disabled`
-var fieldsetDisabled = document.querySelectorAll('fieldset');
-for (var i = 0; i < fieldsetDisabled.length; i++) {
-  fieldsetDisabled[i].setAttribute('disabled', 'disabled');
+var fieldsets = document.querySelectorAll('fieldset');
+for (var i = 0; i < fieldsets.length; i++) {
+  fieldsets[i].setAttribute('disabled', 'disabled');
 }
 
 var mainPin = document.querySelector('.map__pin--main');
@@ -175,27 +184,28 @@ var removePins = function () {
   for (var i = 1; i < pins.length; i++) {
     pins[i].remove();
   }
+};
 
-}
 var activateForm = function () {
   removeClass('.map', 'map--faded');
   renderPinsTo(offersList, mapPinsElement);
-  for (i = 0; i < fieldsetDisabled.length; i++) {
-    fieldsetDisabled[i].removeAttribute('disabled');
+  for (i = 0; i < fieldsets.length; i++) {
+    fieldsets[i].removeAttribute('disabled');
   }
   removeClass('.notice__form', 'notice__form--disabled');
 };
 
+var activePinClassName = 'map__pin--active';
+
 // выделить активный пин
-var activatePin = function (evt) {
-  var currentPin = evt.currentTarget;
-  currentPin.classList.add('map__pin--active');
+var activatePin = function (pinElement) {
+  pinElement.classList.add(activePinClassName);
 };
 
 var deactivatePin = function () {
-  var activePin = document.querySelector('.map__pin--active');
+  var activePin = document.querySelector('.' + activePinClassName);
   if (activePin) {
-    activePin.classList.remove('map__pin--active');
+    activePin.classList.remove(activePinClassName);
   }
 };
 
@@ -225,9 +235,14 @@ var onEscKeydown = function (evt) {
 };
 
 var onPinClick = function (evt) {
+  activatePinCard(evt.currentTarget);
+};
+
+var activatePinCard = function (pinElement) {
   deactivatePin();
-  activatePin(evt);
-  render(offersList);
+  activatePin(pinElement);
+  // render(offersList);
+  renderCard(offersList[pinElement.dataset.id]);
   // renderCard(offersList[0]);
 };
 
@@ -239,7 +254,8 @@ var render = function (ad) {
 
 var onPinKeydown = function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
-    onPinClick();
+    // todo target
+    activatePinCard(evt.currentTarget);
   }
 };
 
