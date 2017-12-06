@@ -1,5 +1,8 @@
 'use strict';
 
+var ENTER_KEYCODE = 13;
+var ESC_KEYCODE = 27;
+
 var TITLES = [
   'Большая уютная квартира',
   'Маленькая неуютная квартира',
@@ -106,6 +109,8 @@ var generatePin = function (ad) {
   var newPin = pinTemplate.cloneNode(true);
   newPin.setAttribute('style', 'left:' + (ad.location.x) + 'px; top:' + (ad.location.y + imgHeight / 2 + sharpEdge) + 'px');
   newPin.children[0].setAttribute('src', ad.author.avatar);
+  newPin.addEventListener('click', onPinClick);
+  newPin.addEventListener('keydown', onPinKeydown);
   return newPin;
 };
 
@@ -148,17 +153,12 @@ var renderCard = function (card) {
   cardElement.querySelector('ul + p').textContent = offer.description;
   // аватарка
   cardElement.querySelector('img.popup__avatar').src = card.author.avatar;
+  cardElement.querySelector('.popup__close').tabIndex = 0;
+  cardElement.querySelector('.popup__close').addEventListener('click', onPopupCloseClick);
   similarOfferElement.appendChild(cardElement);
 };
+var offersList = createSimilarOffers(8);
 
-var showContent = function () {
-  var offersList = createSimilarOffers(8);
-  renderPinsTo(offersList, mapPinsElement);
-  // renderCard(offersList[0]);
-};
-
-// В блоке `map` удаляем класс `map--faded`
-// removeClass('.map', 'map--faded');
 //  MODULE4-TASK1
 
 // всем полям `fieldset` ставим атрибут `disabled`
@@ -168,39 +168,70 @@ for (var i = 0; i < fieldsetDisabled.length; i++) {
 }
 
 var mainPin = document.querySelector('.map__pin--main');
-var mapPin = document.querySelectorAll('.map__pin');
-var mainForm = document.querySelector('form');
-var dropMainPin = function () {
+
+var activateForm = function () {
   removeClass('.map', 'map--faded');
-  showContent();
-  for (var i = 0; i < fieldsetDisabled.length; i++) {
+  renderPinsTo(offersList, mapPinsElement);
+  for (i = 0; i < fieldsetDisabled.length; i++) {
     fieldsetDisabled[i].removeAttribute('disabled');
   }
-  mainForm.classList.remove('notice__form--disabled');
   removeClass('.notice__form', 'notice__form--disabled');
-}
+};
 
-var openPopup = function (e) {
-  if(mapPin.classList.contains('map__pin')) {
-    alert(e);
+var activatePin = function (evt) {
+  var currentPin = evt.currentTarget;
+  currentPin.classList.add('map__pin--active');
+};
+
+var deactivatePin = function () {
+  var activePin = document.querySelector('.map__pin--active');
+  if (activePin) {
+    activePin.classList.remove('map__pin--active');
   }
-}
+};
+var removeAd = function () {
+  var map = document.querySelector('.map');
+  var ad = map.querySelector('.popup');
+  map.removeChild(ad);
+};
 
-// mapPin.addEventListener('click', function () {
-//   if (event.target.className === 'map__pin') {
-//     mapPin.classList.add('.map__pin--active');
-//   }
-//   alert('keks')
-//   // mapPin.classList.add('map__pin--active');
-//
-// })
-mapPin.addEventListener('click', openPopup);
+var onPopupCloseClick = function () {
+  removeAd();
+  deactivatePin();
+};
 
+var onPopupCloseKeydown = function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    removeAd();
+    deactivatePin();
+  }
+};
 
-mainPin.addEventListener('mouseup', dropMainPin);
+var onEscKeydown = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    removeAd();
+    deactivatePin();
+  }
+};
 
+var onPinClick = function (evt) {
+  deactivatePin();
+  activatePin(evt);
+  render(offersList);
+  // renderCard(offersList[0]);
+};
 
+var render = function (ad) {
+  for (i = 0; i < ad.length; i++) {
+    renderCard(ad[i]);
+  }
+};
 
+var onPinKeydown = function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    onPinClick();
+  }
+};
 
-
-
+// mapPin.addEventListener('click', onMapPinClick);
+mainPin.addEventListener('mouseup', activateForm);
