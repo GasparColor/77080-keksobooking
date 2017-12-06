@@ -111,6 +111,7 @@ var generatePin = function (ad) {
   newPin.children[0].setAttribute('src', ad.author.avatar);
   newPin.addEventListener('click', onPinClick);
   newPin.addEventListener('keydown', onPinKeydown);
+  newPin.addEventListener('keydown', onEscKeydown);
   return newPin;
 };
 
@@ -169,6 +170,13 @@ for (var i = 0; i < fieldsetDisabled.length; i++) {
 
 var mainPin = document.querySelector('.map__pin--main');
 
+var removePins = function () {
+  var pins = document.querySelectorAll('.map__pin');
+  for (var i = 1; i < pins.length; i++) {
+    pins[i].remove();
+  }
+
+}
 var activateForm = function () {
   removeClass('.map', 'map--faded');
   renderPinsTo(offersList, mapPinsElement);
@@ -178,6 +186,7 @@ var activateForm = function () {
   removeClass('.notice__form', 'notice__form--disabled');
 };
 
+// выделить активный пин
 var activatePin = function (evt) {
   var currentPin = evt.currentTarget;
   currentPin.classList.add('map__pin--active');
@@ -189,6 +198,7 @@ var deactivatePin = function () {
     activePin.classList.remove('map__pin--active');
   }
 };
+
 var removeAd = function () {
   var map = document.querySelector('.map');
   var ad = map.querySelector('.popup');
@@ -234,4 +244,5 @@ var onPinKeydown = function (evt) {
 };
 
 // mapPin.addEventListener('click', onMapPinClick);
+mainPin.addEventListener('mousedown', removePins);
 mainPin.addEventListener('mouseup', activateForm);
