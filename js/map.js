@@ -165,6 +165,7 @@ var renderCard = function (card) {
   cardElement.querySelector('img.popup__avatar').src = card.author.avatar;
   cardElement.querySelector('.popup__close').tabIndex = 0;
   cardElement.querySelector('.popup__close').addEventListener('click', onPopupCloseClick);
+  cardElement.querySelector('.popup__close').addEventListener('kewdown', onEscKeydown);
   similarOfferElement.appendChild(cardElement);
 };
 var offersList = createSimilarOffers(8);
@@ -241,16 +242,9 @@ var onPinClick = function (evt) {
 var activatePinCard = function (pinElement) {
   deactivatePin();
   activatePin(pinElement);
-  // render(offersList);
   renderCard(offersList[pinElement.dataset.id]);
-  // renderCard(offersList[0]);
 };
 
-var render = function (ad) {
-  for (i = 0; i < ad.length; i++) {
-    renderCard(ad[i]);
-  }
-};
 
 var onPinKeydown = function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
